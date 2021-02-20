@@ -34,35 +34,29 @@ public class SnakeController : MonoBehaviour
     public GameObject Panel;
     public GameObject GameOver;
     public GameObject Go;
-
-    public void Awake()
+    
+    private void Start()
     {
         if (Advertisement.isSupported)
         {
             Advertisement.Initialize("3924151", false);
         }
-    }
-    
-    private void Start()
-    {
+
         _transform = GetComponent<Transform>();
         GameObject scoreGO = GameObject.Find("ScoreCounter");
         scoreGT = scoreGO.GetComponent<Text>();
         scoreGT.text = "Your Score: 0";
 
         Panel = GameObject.Find("Panel");
-        Panel.SetActive(false);
         anim = new Animator();
         anim = Panel.GetComponent<Animator>();
 
         GameOver = GameObject.Find("GameOver");
-        GameOver.SetActive(false);
         gameOver = GameOver.GetComponentInChildren<Text>();
         anim2 = new Animator();
         anim2 = GameOver.GetComponent<Animator>();
 
         Go = GameObject.Find("Go");
-        Go.SetActive(false);
         anim3 = new Animator();
         anim3 = Go.GetComponent<Animator>();
          
@@ -136,11 +130,11 @@ public class SnakeController : MonoBehaviour
             SnakeDeath();
             if(Death == false)
             {
-                Panel.SetActive(true);
+                anim.SetBool("isPanel",true);
             }  
             else if(Death == true)
             {
-                GameOver.SetActive(true);
+                anim2.SetBool("isPanel", true);
             }          
         }
         else if(collision.gameObject.tag == "Bone")
@@ -148,12 +142,12 @@ public class SnakeController : MonoBehaviour
             SnakeDeath();
             if (Death == false)
             {
-                Panel.SetActive(true);
+                anim.SetBool("isPanel", true);
             }
-            else if(Death == true)
+            else if (Death == true)
             {
-                GameOver.SetActive(true);
-            }            
+                anim2.SetBool("isPanel", true);
+            }
         }
     }
 
@@ -168,11 +162,9 @@ public class SnakeController : MonoBehaviour
         if (x == 0) 
         {
             x++;
-            anim.gameObject.SetActive(true);
         }
         else if(Death == true && x == 1)
         {
-            anim2.gameObject.SetActive(true);
             gameOver.text = "Your Score: " + score.ToString() +". Tap to Exit";  
         }
     }
@@ -184,12 +176,16 @@ public class SnakeController : MonoBehaviour
 
     public void RebootSnake()
     {
-        anim.gameObject.SetActive(false);
+        Panel.SetActive(false);
         if (Advertisement.IsReady())
         {
             Advertisement.Show("video");
+            anim3.SetBool("isPanel", true);
         }
-        Go.SetActive(true);
+        else
+        {
+            anim2.SetBool("isPanel", true);
+        }
     }
 
     public void Return()
